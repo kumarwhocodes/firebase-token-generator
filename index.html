@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Token Generator</title>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        window.firebase = { initializeApp, getAuth, GoogleAuthProvider, signInWithPopup };
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #4285f4; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #3367d6; }
+        .token-output { background: #f5f5f5; padding: 15px; border-radius: 4px; margin-top: 20px; word-break: break-all; }
+        .error { color: red; margin-top: 10px; }
+
+    </style>
+</head>
+<body>
+    <h1>Firebase Token Generator</h1>
+    
+    <div class="form-group">
+        <label for="projectId">Firebase Project ID:</label>
+        <input type="text" id="projectId" placeholder="your-project-id">
+    </div>
+    
+    <div class="form-group">
+        <label for="apiKey">Firebase Web API Key:</label>
+        <input type="text" id="apiKey" placeholder="AIzaSyC...">
+    </div>
+    
+    <button onclick="signInWithGoogle()">Sign In with Google</button>
+    
+    <div id="error" class="error"></div>
+    <div id="tokenOutput" class="token-output" style="display: none;">
+        <h3>Firebase ID Token:</h3>
+        <div id="token"></div>
+        <button onclick="copyToken()">Copy Token</button>
+    </div>
+
+    <script>
+        async function signInWithGoogle() {
+            const apiKey = document.getElementById('apiKey').value;
+            const projectId = document.getElementById('projectId').value;
+            
+            if (!apiKey || !projectId) {
+                showError('Please enter both Project ID and API Key');
+                return;
+            }
+
+            try {
+                const firebaseConfig = {
+                    apiKey: apiKey,
+                    authDomain: `${projectId}.firebaseapp.com`,
+                    projectId: projectId
+                };
+                
+                const app = firebase.initializeApp(firebaseConfig);
+                const auth = firebase.getAuth(app);
+                
+                const provider = new firebase.GoogleAuthProvider();
+                const result = await firebase.signInWithPopup(auth, provider);
+                
+                const idToken = await result.user.getIdToken();
+                
+                document.getElementById('token').textContent = idToken;
+                document.getElementById('tokenOutput').style.display = 'block';
+                document.getElementById('error').textContent = '';
+                
+            } catch (error) {
+                showError('Error signing in: ' + error.message);
+            }
+        }
+
+
+
+        function showError(message) {
+            document.getElementById('error').textContent = message;
+            document.getElementById('tokenOutput').style.display = 'none';
+        }
+
+        function copyToken() {
+            const token = document.getElementById('token').textContent;
+            navigator.clipboard.writeText(token);
+        }
+    </script>
+</body>
+</html>

@@ -13,6 +13,15 @@
     </script>
     <style>
         body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .author-info { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 25px; text-align: center; }
+        .social-links { margin-top: 15px; display: flex; justify-content: center; gap: 15px; }
+        .social-links a { display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; text-decoration: none; color: #333; font-weight: 500; border-radius: 25px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); transition: all 0.3s ease; }
+        .social-links a:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .social-links a.github:hover { background: #f6f8fa; }
+        .social-links a.linkedin:hover { background: #e7f3ff; color: #0077b5; }
+        .social-icon { width: 20px; height: 20px; }
+        .badge { display: inline-block; background: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-left: 5px; }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
         input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
@@ -20,11 +29,31 @@
         button:hover { background: #3367d6; }
         .token-output { background: #f5f5f5; padding: 15px; border-radius: 4px; margin-top: 20px; word-break: break-all; }
         .error { color: red; margin-top: 10px; }
-
+        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; }
+        .created-by { position: fixed; bottom: 10px; left: 15px; font-size: 11px; color: #888; background: rgba(255,255,255,0.9); padding: 5px 10px; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .created-by:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); color: #4285f4; }
+        .created-by a { text-decoration: none; color: inherit; font-weight: 500; }
     </style>
 </head>
 <body>
-    <h1>Firebase Token Generator</h1>
+    <div class="header">
+        <h1>🔐 Firebase Token Generator<span class="badge">Open Source</span></h1>
+        <p>Generate Firebase ID tokens using Google authentication</p>
+    </div>
+    
+    <div class="author-info">
+
+        <div class="social-links">
+            <a href="https://github.com/kumarwhocodes" target="_blank" class="github">
+                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/github.svg" alt="GitHub" class="social-icon">
+                GitHub
+            </a>
+            <a href="https://linkedin.com/in/kumaar" target="_blank" class="linkedin">
+                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/linkedin.svg" alt="LinkedIn" class="social-icon">
+                LinkedIn
+            </a>
+        </div>
+    </div>
     
     <div class="form-group">
         <label for="projectId">Firebase Project ID:</label>
@@ -91,5 +120,14 @@
             navigator.clipboard.writeText(token);
         }
     </script>
+    
+    <div class="footer">
+        <p>⭐ Star this project on <a href="https://github.com/kumarwhocodes/firebase-token-generator" target="_blank">GitHub</a></p>
+        <p>Made with ❤️ for the Firebase community</p>
+    </div>
+    
+    <div class="created-by">
+        ✨ Created by <a href="https://github.com/kumarwhocodes" target="_blank">Kumar Sambhav</a>
+    </div>
 </body>
 </html>

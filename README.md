@@ -49,9 +49,14 @@ open index.html
 1. **Enable Google Authentication:**
    - Go to Firebase Console → Authentication → Sign-in method
    - Enable Google provider
-   - Add your domain to authorized domains
 
-2. **Configure Web App:**
+2. **Add Authorized Domain:**
+   - In Authentication → Settings → Authorized domains
+   - Click "Add domain"
+   - Add: `token.kumarwhocodes.me`
+   - Click "Done"
+
+3. **Configure Web App:**
    - Go to Project Settings → General
    - Add a web app if you haven't already
    - Copy the config values

@@ -12,9 +12,9 @@
         window.firebase = { initializeApp, getAuth, GoogleAuthProvider, signInWithPopup };
     </script>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .author-info { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 25px; text-align: center; }
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .author-info { background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
         .social-links { margin-top: 15px; display: flex; justify-content: center; gap: 15px; }
         .social-links a { display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; text-decoration: none; color: #333; font-weight: 500; border-radius: 25px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); transition: all 0.3s ease; }
         .social-links a:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
@@ -27,6 +27,10 @@
         input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
         button { background: #4285f4; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
         button:hover { background: #3367d6; }
+        .copy-btn { background: #6c757d; float: right; margin-top: 15px; }
+        .copy-btn:hover { background: #5a6268; }
+        .toast { position: fixed; top: 20px; right: 20px; background: #2d3748; color: #ffffff; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transform: translateX(300px); transition: transform 0.3s ease; z-index: 1000; font-weight: 500; }
+        .toast.show { transform: translateX(0); }
         .token-output { background: #f5f5f5; padding: 15px; border-radius: 4px; margin-top: 20px; word-break: break-all; }
         .error { color: red; margin-top: 10px; }
         .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; }
@@ -55,6 +59,11 @@
         </div>
     </div>
     
+    <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <strong>⚠️ Important:</strong> Add <code>token.kumarwhocodes.me</code> to your Firebase authorized domains:<br>
+        <small>Firebase Console → Authentication → Settings → Authorized domains → Add domain</small>
+    </div>
+    
     <div class="form-group">
         <label for="projectId">Firebase Project ID:</label>
         <input type="text" id="projectId" placeholder="your-project-id">
@@ -71,13 +80,13 @@
     <div id="tokenOutput" class="token-output" style="display: none;">
         <h3>Firebase ID Token:</h3>
         <div id="token"></div>
-        <button onclick="copyToken()">Copy Token</button>
+        <button onclick="copyToken()" class="copy-btn">Copy Token</button>
     </div>
 
     <script>
         async function signInWithGoogle() {
-            const apiKey = document.getElementById('apiKey').value;
-            const projectId = document.getElementById('projectId').value;
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const projectId = document.getElementById('projectId').value.trim();
             
             if (!apiKey || !projectId) {
                 showError('Please enter both Project ID and API Key');
@@ -118,6 +127,19 @@
         function copyToken() {
             const token = document.getElementById('token').textContent;
             navigator.clipboard.writeText(token);
+            showToast('Token copied!');
+        }
+        
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 2000);
         }
     </script>
     

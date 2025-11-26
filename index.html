@@ -12,34 +12,80 @@
         window.firebase = { initializeApp, getAuth, GoogleAuthProvider, signInWithPopup };
     </script>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; }
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f8f9fa;
+            --input-bg: #ffffff;
+            --input-border: #ddd;
+            --token-bg: #f5f5f5;
+            --border-color: #eee;
+            --footer-text: #666;
+            --created-by-bg: rgba(255,255,255,0.9);
+            --created-by-text: #888;
+            --warning-bg: #fff3cd;
+            --warning-border: #ffeaa7;
+        }
+        
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --card-bg: #2a2a2a;
+            --input-bg: #333333;
+            --input-border: #555;
+            --token-bg: #2a2a2a;
+            --border-color: #444;
+            --footer-text: #aaa;
+            --created-by-bg: rgba(45,45,45,0.9);
+            --created-by-text: #bbb;
+            --warning-bg: #3d3d1a;
+            --warning-border: #666633;
+        }
+        
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; background: var(--bg-color); color: var(--text-color); transition: all 0.3s ease; }
         .header { text-align: center; margin-bottom: 20px; }
-        .author-info { background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
-        .social-links { margin-top: 15px; display: flex; justify-content: center; gap: 15px; }
-        .social-links a { display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; text-decoration: none; color: #333; font-weight: 500; border-radius: 25px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); transition: all 0.3s ease; }
-        .social-links a:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .social-links a.github:hover { background: #f6f8fa; }
-        .social-links a.linkedin:hover { background: #e7f3ff; color: #0077b5; }
+        .theme-switch { position: fixed; top: 20px; right: 20px; width: 60px; height: 30px; z-index: 1000; }
+        .theme-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #87CEEB, #4682B4); transition: .3s; border-radius: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .slider:before { position: absolute; content: "🌙"; height: 24px; width: 24px; left: 3px; bottom: 3px; background: white; transition: .3s; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input:checked + .slider { background: linear-gradient(135deg, #2c3e50, #34495e); }
+        input:checked + .slider:before { transform: translateX(30px); content: "☀️"; }
+        .slider:hover { transform: scale(1.05); }
+        .author-info { background: transparent; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
+        .social-links { margin-top: 0; display: flex; justify-content: center; gap: 15px; }
+        .social-links a { display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; text-decoration: none; color: var(--text-color); font-weight: 500; border-radius: 25px; background: var(--bg-color); border: 1px solid var(--input-border); transition: all 0.3s ease; }
+        .social-links a:hover { transform: translateY(-2px); }
         .social-icon { width: 20px; height: 20px; }
+        [data-theme="dark"] .social-icon { filter: invert(1); }
+        [data-theme="dark"] .social-links a:hover { background: var(--input-bg); }
         .badge { display: inline-block; background: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-left: 5px; }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        input[type="text"] { width: 100%; padding: 8px; border: 1px solid var(--input-border); border-radius: 4px; background: var(--input-bg); color: var(--text-color); }
         button { background: #4285f4; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
         button:hover { background: #3367d6; }
         .copy-btn { background: #6c757d; float: right; margin-top: 15px; }
         .copy-btn:hover { background: #5a6268; }
         .toast { position: fixed; top: 20px; right: 20px; background: #2d3748; color: #ffffff; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transform: translateX(300px); transition: transform 0.3s ease; z-index: 1000; font-weight: 500; }
         .toast.show { transform: translateX(0); }
-        .token-output { background: #f5f5f5; padding: 15px; border-radius: 4px; margin-top: 20px; word-break: break-all; }
+        .token-output { background: var(--token-bg); padding: 15px; border-radius: 4px; margin-top: 20px; word-break: break-all; }
         .error { color: red; margin-top: 10px; }
-        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; }
-        .created-by { position: fixed; bottom: 10px; left: 15px; font-size: 11px; color: #888; background: rgba(255,255,255,0.9); padding: 5px 10px; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--footer-text); }
+        .created-by { position: fixed; bottom: 10px; left: 15px; font-size: 11px; color: var(--created-by-text); background: var(--created-by-bg); padding: 5px 10px; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); backdrop-filter: blur(10px); transition: all 0.3s ease; }
         .created-by:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); color: #4285f4; }
         .created-by a { text-decoration: none; color: inherit; font-weight: 500; }
+        .warning-box { background: var(--warning-bg); border: 1px solid var(--warning-border); padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .time-display { position: fixed; top: 20px; left: 20px; color: var(--footer-text); font-size: 18px; font-weight: 400; font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace; z-index: 1000; }
     </style>
 </head>
 <body>
+    <div class="time-display" id="timeDisplay">--:--</div>
+    
+    <label class="theme-switch" title="Toggle dark/light mode">
+        <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+        <span class="slider"></span>
+    </label>
+    
     <div class="header">
         <h1>🔐 Firebase Token Generator<span class="badge">Open Source</span></h1>
         <p>Generate Firebase ID tokens using Google authentication</p>
@@ -59,7 +105,7 @@
         </div>
     </div>
     
-    <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+    <div class="warning-box">
         <strong>⚠️ Important:</strong> Add <code>token.kumarwhocodes.me</code> to your Firebase authorized domains:<br>
         <small>Firebase Console → Authentication → Settings → Authorized domains → Add domain</small>
     </div>
@@ -84,10 +130,11 @@
     </div>
 
     <script>
-        // Load saved credentials on page load
+        // Load saved credentials and theme on page load
         window.addEventListener('load', function() {
             const savedProjectId = localStorage.getItem('firebase-project-id');
             const savedApiKey = localStorage.getItem('firebase-api-key');
+            const savedTheme = localStorage.getItem('theme') || 'light';
             
             if (savedProjectId) {
                 document.getElementById('projectId').value = savedProjectId;
@@ -95,7 +142,27 @@
             if (savedApiKey) {
                 document.getElementById('apiKey').value = savedApiKey;
             }
+            
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeToggle').checked = savedTheme === 'dark';
+            
+            updateClock();
+            setInterval(updateClock, 1000);
         });
+        
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('timeDisplay').textContent = time;
+        }
+        
+        function toggleTheme() {
+            const isChecked = document.getElementById('themeToggle').checked;
+            const newTheme = isChecked ? 'dark' : 'light';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
 
         async function signInWithGoogle() {
             const apiKey = document.getElementById('apiKey').value.trim();
